@@ -17,7 +17,7 @@ use_service_endpoint = true
 use_private_endpoint = true
 enable_firewall_for_keyvaults_and_storage = true
 
-#additional_network_id = ""
+additional_network_id = "/subscriptions/eef21314-653e-4eec-893f-81680da67b86/resourceGroups/sdaf-deploy-new/providers/Microsoft.Network/virtualNetworks/sdaf-deploy-vnet"
 
 use_spn = false
 #user_assigned_identity_id=""
