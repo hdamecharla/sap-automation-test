@@ -23,8 +23,8 @@ export TF_LOG=TRACE
 export     DEPLOYMENT_REPO_PATH="/home/$AZURE_USER/$DEPLOYMENT_DIR/sap-automation"
 export         CONFIG_REPO_PATH="/home/$AZURE_USER/$DEPLOYMENT_DIR/$CONFIG_REPO/config/WORKSPACES"
 export SAP_AUTOMATION_REPO_PATH="/home/$AZURE_USER/$DEPLOYMENT_DIR/sap-automation"
-export DEPLOYER_CONFIG_DIR="${CONFIG_REPO_PATH}/DEPLOYER/${env_code}-${region_code}-${vnet_code}-INFRASTRUCTURE"
-export LIBRARY_CONFIG_DIR="${CONFIG_REPO_PATH}/LIBRARY/${env_code}-${region_code}-SAP_LIBRARY"
+export DEPLOYER_CONFIG_DIR="${CONFIG_REPO_PATH}/DEPLOYER/${deployer_env_code}-${region_code}-${vnet_code}-INFRASTRUCTURE"
+export LIBRARY_CONFIG_DIR="${CONFIG_REPO_PATH}/LIBRARY/${deployer_env_code}-${region_code}-SAP_LIBRARY"
 export LANDSCAPE_CONFIG_DIR="${CONFIG_REPO_PATH}/LANDSCAPE/${env_code}-${region_code}-INFRASTRUCTURE"
 
 
