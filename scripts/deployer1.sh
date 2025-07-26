@@ -13,3 +13,4 @@ ${SAP_AUTOMATION_REPO_PATH}/deploy/scripts/deploy_controlplane.sh  \
     --tenant_id "${ARM_TENANT_ID}"                                 \
     --msi                                                          \
     --auto-approve
+    

@@ -5,10 +5,10 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 sudo apt install -y ansible
 sudo apt install -y jq
 sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
-gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt-get install terraform
+sudo apt-get install -y unzip
+wget https://releases.hashicorp.com/terraform/1.12.2/terraform_1.12.2_linux_amd64.zip
+unzip terraform*.zip
+sudo mv terraform /usr/local/bin/
 sudo mkdir -p /opt/terraform/.terraform.d/plugin-cache
 sudo chmod a+rwx /opt
 sudo chmod a+rwx /opt/terraform
