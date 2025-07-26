@@ -16,8 +16,8 @@ sudo chmod a+rwx /opt/terraform/.terraform.d
 sudo chmod a+rw /opt/terraform/.terraform.d/plugin-cache
 DEPLOYMENT_DIR=Azure_SAP_Automated_Deployment
 #rm -r -f $DEPLOYMENT_DIR
-mkdir  $DEPLOYMENT_DIR
-cd $DEPLOYMENT_DIR
+mkdir  ~/$DEPLOYMENT_DIR
+cd ~/$DEPLOYMENT_DIR
 git clone https://github.com/Azure/sap-automation.git
 git clone https://github.com/Azure/SAP-automation-samples.git
 git clone https://github.com/Azure/SAP-automation-bootstrap.git

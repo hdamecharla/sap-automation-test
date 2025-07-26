@@ -28,5 +28,5 @@ export LIBRARY_CONFIG_DIR="${CONFIG_REPO_PATH}/LIBRARY/${deployer_env_code}-${re
 export LANDSCAPE_CONFIG_DIR="${CONFIG_REPO_PATH}/LANDSCAPE/${env_code}-${region_code}-INFRASTRUCTURE"
 
 
-export deployer_parameter_file="${DEPLOYER_CONFIG_DIR}/${env_code}-${region_code}-${vnet_code}-INFRASTRUCTURE.tfvars"
-export library_parameter_file="${LIBRARY_CONFIG_DIR/${env_code}-${region_code}-SAP_LIBRARY.tfvars"
+export deployer_parameter_file="${DEPLOYER_CONFIG_DIR}/${deployer_env_code}-${region_code}-${vnet_code}-INFRASTRUCTURE.tfvars"
+export library_parameter_file="${LIBRARY_CONFIG_DIR/${deployer_env_code}-${region_code}-SAP_LIBRARY.tfvars"
