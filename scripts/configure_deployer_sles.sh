@@ -378,64 +378,37 @@ setup_environment() {
         "http://169.254.169.254/metadata/instance?api-version=2021-02-01" | \
         jq -r .compute.subscriptionId 2>/dev/null || echo "unknown")
     
-    # Create environment script with direct PATH construction
-    cat > /tmp/deploy_server.sh << 'EOF'
+    # Build the complete PATH string with absolute paths (not variables)
+    local deployer_path="/opt/python/bin:${HOME}/bin:/opt/ansible/bin:/opt/terraform/bin:${HOME}/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts:${HOME}/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible:/usr/local/bin:/usr/bin:/bin"
+    
+    # Create environment script with single PATH export line (for existing scripts to parse)
+    cat > /tmp/deploy_server.sh << EOF
 # SLES Deployer Environment Configuration
 
 # Set subscription ID
-export ARM_SUBSCRIPTION_ID=SUBSCRIPTION_ID_PLACEHOLDER
+export ARM_SUBSCRIPTION_ID=${subscription_id}
 
 # Set SAP automation paths
-export SAP_AUTOMATION_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/sap-automation
-export DEPLOYMENT_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/sap-automation
-export CONFIG_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/WORKSPACES
+export SAP_AUTOMATION_REPO_PATH=${HOME}/Azure_SAP_Automated_Deployment/sap-automation
+export DEPLOYMENT_REPO_PATH=${HOME}/Azure_SAP_Automated_Deployment/sap-automation
+export CONFIG_REPO_PATH=${HOME}/Azure_SAP_Automated_Deployment/WORKSPACES
 
-# Simple PATH construction - prepend our paths to existing PATH
-# Order: highest priority first
-case ":$PATH:" in
-    *":/opt/python/bin:"*) ;;
-    *) export PATH="/opt/python/bin:$PATH" ;;
-esac
-
-case ":$PATH:" in
-    *":$HOME/bin:"*) ;;
-    *) export PATH="$HOME/bin:$PATH" ;;
-esac
-
-case ":$PATH:" in
-    *":/opt/ansible/bin:"*) ;;
-    *) export PATH="/opt/ansible/bin:$PATH" ;;
-esac
-
-case ":$PATH:" in
-    *":/opt/terraform/bin:"*) ;;
-    *) export PATH="/opt/terraform/bin:$PATH" ;;
-esac
-
-case ":$PATH:" in
-    *":$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts:"*) ;;
-    *) export PATH="$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts:$PATH" ;;
-esac
-
-case ":$PATH:" in
-    *":$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible:"*) ;;
-    *) export PATH="$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible:$PATH" ;;
-esac
+# Single PATH export line with absolute paths for compatibility with existing scripts
+export PATH="${deployer_path}"
 
 # Ansible configuration
 export ANSIBLE_HOST_KEY_CHECKING=False
 export ANSIBLE_COLLECTIONS_PATH=/opt/ansible/collections
-export BOM_CATALOG=$HOME/Azure_SAP_Automated_Deployment/samples/SAP
+export BOM_CATALOG=${HOME}/Azure_SAP_Automated_Deployment/samples/SAP
 
 # Azure authentication
 export ARM_USE_MSI=true
 
-# Azure login
-az login --identity --output none 2>/dev/null && echo "Azure authentication ready"
+# Azure login (only if running interactively)
+if [[ \$- == *i* ]]; then
+    az login --identity --output none 2>/dev/null && echo "Azure authentication ready"
+fi
 EOF
-    
-    # Replace the placeholder with actual subscription ID
-    sed -i "s/SUBSCRIPTION_ID_PLACEHOLDER/${subscription_id}/" /tmp/deploy_server.sh
     
     sudo cp /tmp/deploy_server.sh /etc/profile.d/deploy_server.sh
     sudo rm -f /tmp/deploy_server.sh
@@ -446,6 +419,7 @@ EOF
 #
 # Main execution
 #
+# Update the success message to show correct Azure CLI location
 main() {
     log "Starting SLES Deployer Configuration"
     
@@ -459,14 +433,14 @@ main() {
     setup_environment
     
     # Test Azure login
-    "${AZ_BIN_DIR}/az" login --identity --output none 2>/dev/null || log "Azure login will be available after reboot"
+    "${HOME}/bin/az" login --identity --output none 2>/dev/null || log "Azure login will be available after reboot"
     
     echo ""
     echo "=========================================="
     echo "SLES Deployer Configuration Complete!"
     echo "=========================================="
     echo "✓ Python ${PYTHON_VERSION}: ${PYTHON_DIR}"
-    echo "✓ Azure CLI ${AZ_CLI_VERSION}: ${AZ_BIN_DIR}/az"
+    echo "✓ Azure CLI ${AZ_CLI_VERSION}: ${HOME}/bin/az"
     echo "✓ Terraform ${TF_VERSION}: ${TF_BIN}/terraform"
     echo "✓ Ansible ${ANSIBLE_VERSION}: ${ANSIBLE_BIN}/ansible"
     echo "✓ Azure SAP Automation: ${ASAD_DIR}"
