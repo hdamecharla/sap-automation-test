@@ -378,16 +378,9 @@ setup_environment() {
         "http://169.254.169.254/metadata/instance?api-version=2021-02-01" | \
         jq -r .compute.subscriptionId 2>/dev/null || echo "unknown")
     
-    # Create environment script with PATH deduplication
+    # Create environment script with simpler PATH management
     cat > /tmp/deploy_server.sh << 'EOF'
 # SLES Deployer Environment Configuration
-
-# Function to add path only if not already present
-add_to_path() {
-    if [[ ":$PATH:" != *":$1:"* ]]; then
-        export PATH="$1:$PATH"
-    fi
-}
 
 # Set subscription ID
 export ARM_SUBSCRIPTION_ID=SUBSCRIPTION_ID_PLACEHOLDER
@@ -397,13 +390,27 @@ export SAP_AUTOMATION_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/sap-automat
 export DEPLOYMENT_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/sap-automation
 export CONFIG_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/WORKSPACES
 
-# Add tool paths (in reverse order of priority)
-add_to_path "$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible"
-add_to_path "$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts"
-add_to_path "/opt/terraform/bin"
-add_to_path "/opt/ansible/bin"
-add_to_path "$HOME/bin"  # Azure CLI in user space
-add_to_path "/opt/python/bin"
+# Build PATH with deduplication - check each component before adding
+DEPLOYER_PATHS=(
+    "/opt/python/bin"
+    "$HOME/bin"
+    "/opt/ansible/bin" 
+    "/opt/terraform/bin"
+    "$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts"
+    "$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible"
+)
+
+# Start with current PATH, then prepend our paths (in reverse order for correct precedence)
+NEW_PATH="$PATH"
+for ((i=${#DEPLOYER_PATHS[@]}-1; i>=0; i--)); do
+    DEPLOYER_PATH="${DEPLOYER_PATHS[i]}"
+    # Only add if not already in PATH
+    if [[ ":$NEW_PATH:" != *":$DEPLOYER_PATH:"* ]]; then
+        NEW_PATH="$DEPLOYER_PATH:$NEW_PATH"
+    fi
+done
+
+export PATH="$NEW_PATH"
 
 # Ansible configuration
 export ANSIBLE_HOST_KEY_CHECKING=False
