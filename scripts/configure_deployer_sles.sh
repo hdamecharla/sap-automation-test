@@ -378,7 +378,7 @@ setup_environment() {
         "http://169.254.169.254/metadata/instance?api-version=2021-02-01" | \
         jq -r .compute.subscriptionId 2>/dev/null || echo "unknown")
     
-    # Create environment script with simpler PATH management
+    # Create environment script with direct PATH construction
     cat > /tmp/deploy_server.sh << 'EOF'
 # SLES Deployer Environment Configuration
 
@@ -390,27 +390,37 @@ export SAP_AUTOMATION_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/sap-automat
 export DEPLOYMENT_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/sap-automation
 export CONFIG_REPO_PATH=$HOME/Azure_SAP_Automated_Deployment/WORKSPACES
 
-# Build PATH with deduplication - check each component before adding
-DEPLOYER_PATHS=(
-    "/opt/python/bin"
-    "$HOME/bin"
-    "/opt/ansible/bin" 
-    "/opt/terraform/bin"
-    "$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts"
-    "$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible"
-)
+# Simple PATH construction - prepend our paths to existing PATH
+# Order: highest priority first
+case ":$PATH:" in
+    *":/opt/python/bin:"*) ;;
+    *) export PATH="/opt/python/bin:$PATH" ;;
+esac
 
-# Start with current PATH, then prepend our paths (in reverse order for correct precedence)
-NEW_PATH="$PATH"
-for ((i=${#DEPLOYER_PATHS[@]}-1; i>=0; i--)); do
-    DEPLOYER_PATH="${DEPLOYER_PATHS[i]}"
-    # Only add if not already in PATH
-    if [[ ":$NEW_PATH:" != *":$DEPLOYER_PATH:"* ]]; then
-        NEW_PATH="$DEPLOYER_PATH:$NEW_PATH"
-    fi
-done
+case ":$PATH:" in
+    *":$HOME/bin:"*) ;;
+    *) export PATH="$HOME/bin:$PATH" ;;
+esac
 
-export PATH="$NEW_PATH"
+case ":$PATH:" in
+    *":/opt/ansible/bin:"*) ;;
+    *) export PATH="/opt/ansible/bin:$PATH" ;;
+esac
+
+case ":$PATH:" in
+    *":/opt/terraform/bin:"*) ;;
+    *) export PATH="/opt/terraform/bin:$PATH" ;;
+esac
+
+case ":$PATH:" in
+    *":$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts:"*) ;;
+    *) export PATH="$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/scripts:$PATH" ;;
+esac
+
+case ":$PATH:" in
+    *":$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible:"*) ;;
+    *) export PATH="$HOME/Azure_SAP_Automated_Deployment/sap-automation/deploy/ansible:$PATH" ;;
+esac
 
 # Ansible configuration
 export ANSIBLE_HOST_KEY_CHECKING=False
