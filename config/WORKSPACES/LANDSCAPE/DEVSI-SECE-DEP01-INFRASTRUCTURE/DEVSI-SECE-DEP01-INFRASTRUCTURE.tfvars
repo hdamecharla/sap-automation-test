@@ -24,13 +24,13 @@
 #########################################################################################
 
 # The environment value is a mandatory field, it is used for partitioning the environments, for example (PROD and NP)
-environment = "DEVSB"
+environment = "DEVSI"
 
 # The location value is a mandatory field, it is used to control where the resources are deployed
 location = "swedencentral"
 
 # Description of the Workload zone.
-Description = "DEVSB workload zone"
+Description = "DEVSI workload zone"
 
 #If you want to provide a custom naming json use the following parameter.
 #name_override_file = ""
@@ -69,7 +69,7 @@ network_logical_name = "DEP01"
 network_address_space = "10.177.20.0/24"
 
 # use_private_endpoint is a boolean flag controlling if the key vaults and storage accounts have private endpoints
-use_private_endpoint = true
+#use_private_endpoint = true
 
 # use_service_endpoint is a boolean flag controlling if the key vaults and storage accounts have service endpoints
 use_service_endpoint = true

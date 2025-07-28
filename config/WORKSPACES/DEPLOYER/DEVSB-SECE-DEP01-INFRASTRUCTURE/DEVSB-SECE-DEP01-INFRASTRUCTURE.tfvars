@@ -22,7 +22,7 @@ deployer_assign_subscription_permissions = true
 public_network_access_enabled = false
 deployer_count = 0
 use_service_endpoint = true
-use_private_endpoint = true
+#use_private_endpoint = true
 enable_firewall_for_keyvaults_and_storage = true
 
 #enable_rbac_authorization_for_keyvault = true 
