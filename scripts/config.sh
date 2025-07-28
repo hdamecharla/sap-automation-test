@@ -29,4 +29,4 @@ export LANDSCAPE_CONFIG_DIR="${CONFIG_REPO_PATH}/LANDSCAPE/${env_code}-${region_
 
 
 export deployer_parameter_file="${DEPLOYER_CONFIG_DIR}/${deployer_env_code}-${region_code}-${vnet_code}-INFRASTRUCTURE.tfvars"
-export library_parameter_file="${LIBRARY_CONFIG_DIR/${deployer_env_code}-${region_code}-SAP_LIBRARY.tfvars"
+export library_parameter_file="${deployer_env_code}-${region_code}-SAP_LIBRARY.tfvars"

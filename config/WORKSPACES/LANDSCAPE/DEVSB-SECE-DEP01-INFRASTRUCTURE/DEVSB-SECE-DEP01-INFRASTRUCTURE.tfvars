@@ -30,7 +30,7 @@ environment = "DEVSB"
 location = "swedencentral"
 
 # Description of the Workload zone.
-Description = "DEVSA workload zone"
+Description = "DEVSB workload zone"
 
 #If you want to provide a custom naming json use the following parameter.
 #name_override_file = ""
@@ -57,7 +57,7 @@ Description = "DEVSA workload zone"
 #########################################################################################
 
 # The network logical name is mandatory - it is used in the naming convention and should map to the workload virtual network logical name
-network_logical_name = "SAP04"
+network_logical_name = "DEP01"
 
 # The name is optional - it can be used to override the default naming
 #network_name = ""
